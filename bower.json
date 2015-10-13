@@ -1,5 +1,5 @@
 {
-  "name": "image-gallery",
+  "name": "image-picker",
   "version": "0.1.0",
   "authors": [
     "Pasquale Lisena (pasq.lisena@gmail.com)"
@@ -15,9 +15,9 @@
     "image-picker",
     "picker"
   ],
-  "main": "image-gallery.html",
+  "main": "image-picker.html",
   "license": "MIT",
-  "homepage": "https://github.com/pasqLisena/image-gallery/",
+  "homepage": "https://github.com/pasqLisena/image-picker/",
   "ignore": [
     "/.*",
     "/test/",
