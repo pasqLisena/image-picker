@@ -124,7 +124,7 @@ Example:
   </style>
 
   <template>
-    <iron-ajax id="ironAjax" auto url="{{url}}" handle-as="json" last-response="{{response}}"></iron-ajax>
+    <iron-ajax id="ironAjax" auto loading="{{loading}}" url="{{url}}" handle-as="json" last-response="{{response}}"></iron-ajax>
 
     <paper-spinner alt="loading" active$="{{loading}}"></paper-spinner>
     <div hidden$="{{loading}}">
@@ -155,6 +155,11 @@ Example:
             reflectToAttribute: true,
             notify: true
           },
+          field: {
+            type: String,
+            reflectToAttribute: true,
+            notify: true
+          },
           images: {
             type: Array,
             value: function(){
@@ -171,33 +176,14 @@ Example:
           }
         },
         listeners: {
-          'ironAjax.request': 'onAjaxResponse',
           'ironAjax.response': 'onAjaxResponse'
         },
         computeValue: function(image){
           return (image && image.src)  || '';
         },
-        onAjaxRequest: function(){
-          this.loading = true;
-        },
         onAjaxResponse: function(){
-          var elem = this;
-          setTimeout(function(){
-            elem.loading = false;
-          }, 1000);
-          // FIXME test in real enviroment
-          this.images = [
-          {
-            'src': 'https://test-landing.seat.it/static/images/007585100_Ristoranti/Header_Ristoranti_2.jpg'
-          },
-          {
-            'src': 'https://test-landing.seat.it/static/images/007585100_Ristoranti/Header_Ristoranti_1.jpg'
-          },
-          {
-            'src': 'https://test-landing.seat.it/static/images/007585100_Ristoranti/Header_Ristoranti_3.jpg'
-          }
-          ]
-
+          if(!this.response) return;
+          this.images = this.field ? (this.response && this.response[this.field]) : this.response;
         },
         onImageSelected: function(e){
           var $imageRepeat = this.$.imageRepeat;
@@ -212,13 +198,6 @@ Example:
           this.indexSelectedOld = index;
 
           this.fire('change', {image: this.selected.src});
-        },
-        ready: function() {
-          console.log(this.url)
-        },
-        attached: function() {
-        },
-        detached: function() {
         }
       });
     })();

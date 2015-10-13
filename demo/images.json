@@ -1,13 +1,13 @@
 {
-  'items': [
+  "results": [
     {
-      'src': 'https://test-landing.seat.it/static/images/007585100_Ristoranti/Header_Ristoranti_2.jpg'
+      "src": "https://test-landing.seat.it/static/images/007585100_Ristoranti/Header_Ristoranti_2.jpg"
     },
     {
-      'src': 'https://test-landing.seat.it/static/images/007585100_Ristoranti/Header_Ristoranti_1.jpg'
+      "src": "https://test-landing.seat.it/static/images/007585100_Ristoranti/Header_Ristoranti_1.jpg"
     },
     {
-      'src': 'https://test-landing.seat.it/static/images/007585100_Ristoranti/Header_Ristoranti_3.jpg'
+      "src": "https://test-landing.seat.it/static/images/007585100_Ristoranti/Header_Ristoranti_3.jpg"
     }
   ]
 }
