@@ -1,0 +1,226 @@
+<link rel="import" href="../polymer/polymer.html" />
+<link rel="import" href="../iron-image/iron-image.html" />
+<link rel="import" href="../iron-ajax/iron-ajax.html" />
+<link rel="import" href="../paper-spinner/paper-spinner.html" />
+
+<!--
+Image gallery and picker in Polymer.
+
+Example:
+
+<image-picker></image-picker>
+
+@demo
+-->
+<dom-module id="image-picker">
+
+  <style>
+    :host {
+      display: block;
+      position: relative;
+      width: 100%;
+      --selected-color: #34A853;
+      --hover-color: #4285F4;
+    }
+    * {
+      -webkit-box-sizing: border-box;
+      -moz-box-sizing: border-box;
+      box-sizing: border-box;
+    }
+    iron-image {
+      width: 100%;
+      height: 100%;
+      background-color: lightgray;
+    }
+    .img-selector {
+      display: inline-block;
+      position: relative;
+      vertical-align: text-top;
+      border: 3px solid transparent;
+      border-radius: 0.2em;
+      margin: 1em .5em;
+      width: 100px;
+      height: 100px;
+      cursor: pointer;
+
+      -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.055);
+      -moz-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.055);
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.055);
+
+      -webkit-transition: all 0.2s ease-in-out;
+      -moz-transition: all 0.2s ease-in-out;
+      -o-transition: all 0.2s ease-in-out;
+      transition: all 0.2s ease-in-out;
+    }
+    .img-selector:hover {
+      border-color: var(--hover-color);
+      -webkit-box-shadow: 2px 3px 7px rgba(0, 0, 0, 0.25);
+      -moz-box-shadow: 2px 3px 7px rgba(0, 0, 0, 0.25);
+      box-shadow: 2px 3px 7px rgba(0, 0, 0, 0.25);
+    }
+    .img-selector[selected],
+    .img-selector[selected]:hover {
+      border-color: var(--selected-color);
+    }
+    .img-selector:before {
+      content: '';
+      display: block;
+
+      position: absolute;
+      z-index: 1;
+      bottom: 0;
+      right: 0;
+
+      width: 0;
+      height: 0;
+
+      border-style: solid;
+      border-width: 0;
+      border-color: transparent transparent var(--selected-color) transparent;
+
+      -webkit-transition: all 0.2s ease-in-out;
+      -moz-transition: all 0.2s ease-in-out;
+      -o-transition: all 0.2s ease-in-out;
+      transition: all 0.2s ease-in-out;
+    }
+    .img-selector[selected]:before {
+      border-left-width: 25px;
+      border-bottom-width: 25px;
+    }
+
+    .img-selector:after {
+      content: "";
+      background-color: transparent;
+
+      position: absolute;
+      z-index:2;
+      right: 4px;
+      bottom: 4px;
+
+      width: 0;
+      height: 0;
+      border-bottom: 0 solid #fff;
+      border-right: 0 solid #fff;
+
+      transform: rotate(45deg);
+      -o-transform: rotate(45deg);
+      -ms-transform: rotate(45deg);
+      -webkit-transform: rotate(45deg);
+
+      -webkit-transition: all 0.2s ease-in-out;
+      -moz-transition: all 0.2s ease-in-out;
+      -o-transition: all 0.2s ease-in-out;
+      transition: all 0.2s ease-in-out;
+    }
+    .img-selector[selected]:after {
+      border-width: 3px;
+      width: 3px;
+      height: 7px;
+    }
+    paper-spinner {
+      position: absolute;
+      margin-left: 45%;
+    }
+  </style>
+
+  <template>
+    <iron-ajax id="ironAjax" auto url="{{url}}" handle-as="json" last-response="{{response}}"></iron-ajax>
+
+    <paper-spinner alt="loading" active$="{{loading}}"></paper-spinner>
+    <div hidden$="{{loading}}">
+
+      <template id="imageRepeat" is="dom-repeat" items="{{images}}">
+        <a class="img-selector" on-click="onImageSelected" selected$="{{item.selected}}">
+          <iron-image sizing="cover" preload fade src="{{item.src}}"></iron-image>
+        </a>
+      </template>
+
+      <array-selector id="selector" items="{{images}}" selected="{{selected}}"></array-selector>
+    </div>
+
+  </template>
+
+
+  <script>
+    (function(){
+      Polymer({
+        is: 'image-picker',
+        properties: {
+          value: {
+            type: String,
+            computed: "computeValue(selected)"
+          },
+          url: {
+            type: String,
+            reflectToAttribute: true,
+            notify: true
+          },
+          images: {
+            type: Array,
+            value: function(){
+              return [];
+            }
+          },
+          loading: {
+            type: Boolean,
+            value: true
+          },
+          indexSelectedOld: {
+            type: Number,
+            value: -1
+          }
+        },
+        listeners: {
+          'ironAjax.request': 'onAjaxResponse',
+          'ironAjax.response': 'onAjaxResponse'
+        },
+        computeValue: function(image){
+          return (image && image.src)  || '';
+        },
+        onAjaxRequest: function(){
+          this.loading = true;
+        },
+        onAjaxResponse: function(){
+          var elem = this;
+          setTimeout(function(){
+            elem.loading = false;
+          }, 1000);
+          // FIXME test in real enviroment
+          this.images = [
+          {
+            'src': 'https://test-landing.seat.it/static/images/007585100_Ristoranti/Header_Ristoranti_2.jpg'
+          },
+          {
+            'src': 'https://test-landing.seat.it/static/images/007585100_Ristoranti/Header_Ristoranti_1.jpg'
+          },
+          {
+            'src': 'https://test-landing.seat.it/static/images/007585100_Ristoranti/Header_Ristoranti_3.jpg'
+          }
+          ]
+
+        },
+        onImageSelected: function(e){
+          var $imageRepeat = this.$.imageRepeat;
+          var item = $imageRepeat.itemForElement(e.target);
+          if(item == this.selected) return;
+          var index = $imageRepeat.indexForElement(e.target);
+
+          this.set('images.'+this.indexSelectedOld+'.selected', false);
+          this.set('images.'+index+'.selected', true);
+
+          this.$.selector.select(item);
+          this.indexSelectedOld = index;
+
+          this.fire('change', {image: this.selected.src});
+        },
+        ready: function() {
+          console.log(this.url)
+        },
+        attached: function() {
+        },
+        detached: function() {
+        }
+      });
+    })();
+  </script>
+</dom-module>

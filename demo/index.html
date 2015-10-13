@@ -1,0 +1,67 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <title>image-picker Demo</title>
+  <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+  <link rel="import" href="../image-picker.html">
+  <style>
+  #events-list {
+    display: inline-block;
+    max-height: 200px;
+    overflow: auto;
+  }
+  .output {
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+  }
+  img {
+    max-width: 100%;
+    max-height: 100%;
+  }
+  </style>
+</head>
+<body>
+
+  <p>An example of <code>&lt;image-picker&gt;</code>:</p>
+
+
+  <image-picker id="imgGallery" url="images.json"></image-picker>
+
+  <div class="output">
+    <div>
+      <h3>Events</h3>
+      <ul id="events-list">
+      </ul>
+    </div>
+
+    <div>
+      <h3>Result</h3>
+      <img id="result" />
+    </div>
+  </div>
+
+  <script>
+  var imgGallery = document.getElementById('imgGallery');
+  var eventsList = document.getElementById('events-list');
+  var result = document.getElementById('result');
+  imgGallery.addEventListener('change', addEvent);
+
+  function addEvent(e){
+    result.src = imgGallery.value;
+    var li = document.createElement('li');
+    li.innerText = e.type + ': ' + imgGallery.value;
+    eventsList.appendFirst(li);
+  }
+
+  HTMLElement.prototype.appendFirst=function(childNode){
+    if(this.firstChild)this.insertBefore(childNode,this.firstChild);
+    else this.appendChild(childNode);
+  };
+
+  </script>
+</body>
+</html>

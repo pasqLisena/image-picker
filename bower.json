@@ -1,0 +1,36 @@
+{
+  "name": "image-gallery",
+  "version": "0.1.0",
+  "authors": [
+    "Pasquale Lisena (pasq.lisena@gmail.com)"
+  ],
+  "description": "Image gallery and picker in Polymer.",
+  "keywords": [
+    "web-component",
+    "web-components",
+    "polymer",
+    "image",
+    "gallery",
+    "image-gallery",
+    "image-picker",
+    "picker"
+  ],
+  "main": "image-gallery.html",
+  "license": "MIT",
+  "homepage": "https://github.com/pasqLisena/image-gallery/",
+  "ignore": [
+    "/.*",
+    "/test/",
+    "/demo/"
+  ],
+  "dependencies": {
+    "iron-ajax": "PolymerElements/iron-ajax#~1.0.6",
+    "iron-image": "PolymerElements/iron-image#~1.0.2",
+    "paper-spinner": "PolymerElements/paper-spinner#~1.0.2",
+    "polymer": "Polymer/polymer#^1.0.0"
+  },
+  "devDependencies": {
+    "iron-component-page": "PolymerElements/iron-component-page#^1.0.0",
+    "web-component-tester": "*"
+  }
+}
