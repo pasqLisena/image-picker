@@ -8,7 +8,7 @@ Image gallery and picker in Polymer.
 
 Example:
 
-<image-picker></image-picker>
+    <image-picker></image-picker>
 
 @demo
 -->
@@ -33,6 +33,10 @@ Example:
       background-color: lightgray;
     }
     .image-gallery {
+      max-width: 100%;
+      max-height: 100%;
+      overflow: hidden;
+
       display: -webkit-box;
       display: -webkit-flex;
       display: -ms-flexbox;
@@ -58,9 +62,11 @@ Example:
       vertical-align: text-top;
       border: 3px solid transparent;
       border-radius: 0.2em;
+
       -webkit-flex-basis:100px;
-          -ms-flex-preferred-size:100px;
-              flex-basis:100px;
+      -ms-flex-preferred-size:100px;
+      flex-basis:100px;
+
       height: 100px;
       cursor: pointer;
 
@@ -145,7 +151,7 @@ Example:
   </style>
 
   <template>
-    <iron-ajax id="ironAjax" auto loading="{{loading}}" url="{{url}}" handle-as="json" last-response="{{response}}"></iron-ajax>
+    <iron-ajax id="ironAjax" auto={{url}} loading="{{loading}}" url="{{url}}" handle-as="json" last-response="{{response}}"></iron-ajax>
 
     <paper-spinner alt="loading" active$="{{loading}}"></paper-spinner>
     <div class="image-gallery" hidden$="{{loading}}">
@@ -164,6 +170,9 @@ Example:
 
   <script>
     (function(){
+      var noop = function(data, callback){
+        callback(data);
+      }
       Polymer({
         is: 'image-picker',
         properties: {
@@ -187,6 +196,14 @@ Example:
               return [];
             }
           },
+          prepareResponse: {
+            type: Object,
+            value: function(){
+              return noop;
+            },
+            reflectToAttribute: true,
+            notify: true
+          },
           loading: {
             type: Boolean,
             value: true
@@ -204,7 +221,13 @@ Example:
         },
         onAjaxResponse: function(){
           if(!this.response) return;
-          this.images = this.field ? (this.response && this.response[this.field]) : this.response;
+          var fun = typeof this.prepareResponse == 'function' ? this.prepareResponse : noop;
+
+          var data = this.field ? (this.response && this.response[this.field]) : this.response;
+          var _this = this;
+          fun(data, function(array){
+            _this.images = array;
+          });
         },
         onImageSelected: function(e){
           var $imageRepeat = this.$.imageRepeat;
